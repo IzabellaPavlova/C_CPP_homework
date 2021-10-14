@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <string.h>
-#include <stdbool.h>
 #include <stdlib.h>
 #include "films.h"
 
@@ -8,6 +7,7 @@
 #define MAX_RELEASE_DATE 2021
 #define MIN_AVG_RATING 0
 #define MAX_AVG_RATING 10
+#define MAX_STRING_SIZE 200
 
 int create_film_list(struct all_films **new_film_p){
     if(!new_film_p){
@@ -33,31 +33,35 @@ int create_film_list(struct all_films **new_film_p){
         new_film->list_of_films[i].release_date = NULL;
         new_film->list_of_films[i].genre = NULL;
         new_film->list_of_films[i].avg_audience_rating = NULL;
-        char *string = NULL;
+        char string[MAX_STRING_SIZE];
         int number = NULL;
         printf("Enter a film name:\n");
-        scanf("%s", &string);
+        scanf("%s", string);
         if (!string) {
-        return 0;
+            return 0;
         }
-        new_film->list_of_films[i].film_name = string;
-        printf("Enter a release date (min: %d - max: %d):\n", MIN_RELEASE_DATE, MAX_RELEASE_DATE);
-        scanf("%d", &number);
-        if (!number) {
-        return 0;
-        }
+        strcpy(&new_film->list_of_films[i].film_name, &string);
+        do {
+            printf("Enter a release date (min: %d - max: %d):\n", MIN_RELEASE_DATE, MAX_RELEASE_DATE);
+            scanf("%d", &number);
+            if (!number) {
+                return 0;
+            }
+        } while (!(number >= MIN_RELEASE_DATE && number <= MAX_RELEASE_DATE));
         new_film->list_of_films[i].release_date = number;
         printf("Enter a film genre:\n");
-        scanf("%s", &string);
+        scanf("%s", string);
         if (!string) {
-        return 0;
+            return 0;
         }
-        new_film->list_of_films[i].genre = string;
-        printf("Enter an average rating (min: %d - max: %d):\n", MIN_AVG_RATING, MAX_AVG_RATING);
-        scanf("%d", &number);
-        if (!number) {
-        return 0;
-        }
+        strcpy(&new_film->list_of_films[i].genre, &string);
+        do{
+            printf("Enter an average rating (min: %d - max: %d):\n", MIN_AVG_RATING, MAX_AVG_RATING);
+            scanf("%d", &number);
+            if (!number) {
+                return 0;
+            }
+        } while(!(number >= MIN_AVG_RATING && number <= MAX_AVG_RATING));
         new_film->list_of_films[i].avg_audience_rating = number;
     }
     return 1;
@@ -73,22 +77,32 @@ void print(const struct all_films *all_films){
 }
 
 void print_list(const struct all_films *all_films, int release_year, int lowest_rating, int highest_rating, const char *need_genre){
+    printf("\nThis is the list of recomendations for you: \n");
     for (size_t i = 0; i < all_films->size; ++i){
-        if (all_films->list_of_films[i].release_date = release_year){
+        if (all_films->list_of_films[i].release_date == release_year){
             if (all_films->list_of_films[i].avg_audience_rating >= lowest_rating){
                 if (all_films->list_of_films[i].avg_audience_rating <= highest_rating){
                     const char * string = all_films->list_of_films[i].genre;
-                    if (strcmp(&string, &need_genre) == 0){
+                    if (strcmp(&string, need_genre) == 0){
                         printf("\nFilm name: %s\n", &all_films->list_of_films[i].film_name);
                         printf("Release date: %d\n", all_films->list_of_films[i].release_date);
                         printf("Film genre: %s\n", &all_films->list_of_films[i].genre);
                         printf("Average rating: %d\n\n", all_films->list_of_films[i].avg_audience_rating);
                     }
+                    else{
+                        printf("The are no films with such parametrs\n");
+                    }
                 }
+                else{
+                    printf("The are no films with such parametrs\n");
+                }
+            }
+            else{
+                printf("The are no films with such parametrs\n");
             }
         }
         else{
-            printf("The are no films with such parametrs");
+            printf("The are no films with such parametrs\n");
         }
     }
 }

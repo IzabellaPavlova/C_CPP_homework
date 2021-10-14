@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include "films.h"
 
+#define MIN_RELEASE_DATE 1888
+#define MAX_STRING_SIZE 200
+
 int main() {
 
     struct all_films *new_film = NULL;
@@ -15,7 +18,7 @@ int main() {
     printf("The films you've entered:\n");
     print(new_film);
 
-    int release_year = 1888;
+    int release_year = MIN_RELEASE_DATE;
     printf("Enter a release year: ");
     scanf("%d", &release_year);
 
@@ -26,14 +29,12 @@ int main() {
     printf("Enter a highest rating: ");
     scanf("%d", &highest_rating);
 
-    char *need_genre = NULL;
+    char need_genre[MAX_STRING_SIZE];
     printf("Enter a genre: ");
-    scanf("%s", &need_genre);
+    scanf("%s", need_genre);
 
-    printf("\nThis is the list of recomendations for you: \n");
     print_list(new_film, release_year, lowest_rating, highest_rating, need_genre);
 
     deletion(new_film);
-
     return 0;
 }
